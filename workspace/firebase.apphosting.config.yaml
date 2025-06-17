@@ -20,7 +20,7 @@ env:
     availability:
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: "myonlineshop2025-5ffcf.firebasestorage.app"
+    value: "myonlineshop2025-5ffcf.appspot.com"
     availability:
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
