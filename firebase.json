@@ -1,0 +1,13 @@
+{
+  "apphosting": [
+    {
+      "backend": {
+        "region": "europe-west4"
+      },
+      "hosting": {
+        "site": "my-shop2025",
+        "source": "workspaces"
+      }
+    }
+  ]
+}
