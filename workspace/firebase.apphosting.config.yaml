@@ -7,7 +7,7 @@ runConfig:
   maxInstances: 10
 
 apphosting:
-  - backendId: "myonlineshop2025"
+  - backendId: "my2025"
     location: "europe-west4"
     rootDir: "workspace"
     env:
@@ -29,6 +29,7 @@ apphosting:
         value: "G-7MJZZ1SV8M"
       - variable: GEMINI_API_KEY
         value: AlzaSyDS8ZclbpBfiea9Qp6_zg3NdCyR3uCXSxM
+
 
 headers:
   - path: /_next/static
