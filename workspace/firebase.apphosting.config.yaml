@@ -23,8 +23,8 @@ env:
     value: ${env.APP_ID}
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
     value: ${env.MEASUREMENT_ID}
-  - variable: GEMINI_API_KEY
-    secret: GEMINI_API_KEY_TIFLISISTYLES # Ensure this secret exists in Secret Manager
+  - variable: GEMINI_API_KEY # This will be used by the genkit.ts for server-side AI
+    secret: GEMINI_API_KEY_TIFLISISTYLES # Ensure this secret exists in Google Secret Manager
     availability:
       - BUILD
       - RUNTIME
@@ -41,4 +41,3 @@ headers:
 # buildConfig:
 #   buildCommand: npm run build
 #   startCommand: npm run start
-    

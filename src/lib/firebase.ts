@@ -18,7 +18,6 @@ interface FirebaseConfig {
 let firebaseConfigValues: FirebaseConfig = {};
 let configSource: string = "None (initial)";
 
-// Log attempts to get config
 console.log("[FirebaseInit] Attempting to load Firebase config...");
 
 // 1. Try injected config (Primarily for Firebase Hosting, but App Hosting might use similar mechanism for Web Apps)
@@ -27,7 +26,6 @@ if (typeof window !== 'undefined' && (window as any).__FIREBASE_DEFERRED_APP_CON
     const deferredConfig = (window as any).__FIREBASE_DEFERRED_APP_CONFIG__;
     if (typeof deferredConfig.then === 'function') {
       console.warn("[FirebaseInit] __FIREBASE_DEFERRED_APP_CONFIG__ is a promise. This script expects it to be resolved.");
-      // If it's a promise, this simple script won't await it. App Hosting should resolve it.
     } else {
       firebaseConfigValues = deferredConfig;
       configSource = "__FIREBASE_DEFERRED_APP_CONFIG__ (window)";
@@ -67,8 +65,18 @@ if (!firebaseConfigValues.apiKey) {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
+  // Log the values as read from process.env
+  console.log(`[FirebaseInit] Values read from process.env:`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_API_KEY: ${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_APP_ID: ${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}`);
+  console.log(`  NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID}`);
   console.log(`[FirebaseInit] Attempted to load config from ${configSource}. API Key found: ${!!firebaseConfigValues.apiKey}, Project ID found: ${!!firebaseConfigValues.projectId}`);
 }
+
 
 // Check if essential config values are present
 if (!firebaseConfigValues.apiKey) {
@@ -113,4 +121,3 @@ if (typeof window !== 'undefined' && firebaseConfigValues.measurementId && app &
 
 
 export { app, auth, db, analytics };
-    
