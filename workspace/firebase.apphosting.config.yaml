@@ -6,25 +6,29 @@ runConfig:
   concurrency: 80
   maxInstances: 10
 
-env:
-  - variable: NODE_ENV
-    value: production
-  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: AIzaSyDlBZ5B8x3qkmFfIjWTvJHKv2KkBM4AFXQ
-  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: myonlineshop2025-5ffcf.firebaseapp.com
-  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: myonlineshop2025-5ffcf
-  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: myonlineshop2025-5ffcf.firebasestorage.app
-  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: "239556272864"
-  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: 1:239556272864:web:c7b7dd9d662da45ee2a685
-  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    value: G-7MJZZ1SV8M
-  - variable: GEMINI_API_KEY
-    value: AlzaSyDS8ZclbpBfiea9Qp6_zg3NdCyR3uCXSxM
+apphosting:
+  - backendId: "myonlineshop2025"
+    location: "europe-west4"
+    rootDir: "workspace"
+    env:
+      - variable: NODE_ENV
+        value: production
+      - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+        value: "AIzaSyDlBZ5B8x3qkmFfIjWTvJHKv2KkBM4AFXQ"
+      - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+        value: "myonlineshop2025-5ffcf.firebaseapp.com"
+      - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        value: "myonlineshop2025-5ffcf"
+      - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+        value: "myonlineshop2025-5ffcf.appspot.com"
+      - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+        value: "239556272864"
+      - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+        value: "1:239556272864:web:c7b7dd9d662da45ee2a685"
+      - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+        value: "G-7MJZZ1SV8M"
+      - variable: GEMINI_API_KEY
+        value: AlzaSyDS8ZclbpBfiea9Qp6_zg3NdCyR3uCXSxM
 
 headers:
   - path: /_next/static
@@ -35,8 +39,3 @@ headers:
     headers:
       - key: Cache-Control
         value: public, max-age=31536000, immutable
-
-# თუ გჭირდება build/start ბრძანებების მითითება, ჩაწერე აქ:
-# buildConfig:
-#   buildCommand: npm run build
-#   startCommand: npm run start
