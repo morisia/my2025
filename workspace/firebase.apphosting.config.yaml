@@ -7,56 +7,27 @@ runConfig:
   concurrency: 80
   maxInstances: 10
 env:
+  - variable: NODE_ENV
+    value: production
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyDlBZ5B8x3qkmFfIjWTvJHKv2KkBM4AFXQ"
-    availability:
-      - RUNTIME
+    value: ${env.API_KEY}
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: "myonlineshop2025-5ffcf.firebaseapp.com"
-    availability:
-      - RUNTIME
+    value: ${env.AUTH_DOMAIN}
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: "myonlineshop2025-5ffcf"
-    availability:
-      - RUNTIME
+    value: ${env.PROJECT_ID}
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: "myonlineshop2025-5ffcf.firebasestorage.app"
-    availability:
-      - RUNTIME
+    value: ${env.STORAGE_BUCKET}
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: "239556272864"
-    availability:
-      - RUNTIME
+    value: ${env.MESSAGING_SENDER_ID}
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: "1:239556272864:web:97d6cb2435500d09e2a685"
-    availability:
-      - RUNTIME
+    value: ${env.APP_ID}
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    value: "G-DQ41M8GSHN"
-    availability:
-      - RUNTIME
+    value: ${env.MEASUREMENT_ID}
   - variable: GEMINI_API_KEY
-    value: "AlzaSyDS8ZclbpBfiea9Qp6_zg3NdCyR3uCXSxM"
+    secret: GEMINI_API_KEY_TIFLISISTYLES # Ensure this secret exists in Secret Manager
     availability:
+      - BUILD
       - RUNTIME
-
-  # IMPORTANT: For GEMINI_API_KEY, it's highly recommended to use Secret Manager.
-  # 1. Create a secret in Google Cloud Secret Manager (e.g., named GEMINI_API_KEY_TIFLISISTYLES)
-  #    with your Gemini API key as the value.
-  # 2. Ensure your App Hosting service account has the "Secret Manager Secret Accessor" role for this secret.
-  # 3. Then, uncomment the 'secret' line below and remove/comment out the 'value' line.
-  
-    # value: "YOUR_GEMINI_API_KEY_HERE" # Replace with your actual key if not using Secret Manager (NOT RECOMMENDED for production)
-   
-# buildConfig:
-#   installCommand: npm ci && npm run build
-#   buildCommand: npm run build
-#   startCommand: npm run start
-#   # Note: If your app uses a custom server, ensure startCommand correctly runs it.
-#   # For standard Next.js, `next start` is usually sufficient.
-#   # The commands above are examples. Firebase App Hosting often infers these for Next.js.
-#   # If you encounter issues, uncommenting and adjusting these might be necessary.
-#   # Specifically for Next.js, these are often not needed as it detects Next.js.
 headers:
   - path: /_next/static
     headers:
@@ -66,17 +37,8 @@ headers:
     headers:
       - key: Cache-Control
         value: public, max-age=31536000, immutable
-# Necessary for Next.js App Router and static assets
-# servingStrategy: static # Removed as it might conflict with dynamic Next.js features. App Hosting should handle Next.js correctly.
-# customDomain: your-custom-domain.com # Optional: if you have a custom domain
-# VPC connector for accessing resources in a VPC network
-# vpcConnector:
-#   name: projects/YOUR_PROJECT_ID/locations/YOUR_REGION/connectors/YOUR_CONNECTOR_NAME
-#   egress: PRIVATE_RANGES_ONLY
-# Automatic rollout policy
-# rolloutPolicy:
-#   initialDelay: 30s
-#   minInstances: 1
-#   maxSurgeInstances: 2
-#   maxSurgePercent: 25
-#   rolloutStrategy: BLUE_GREEN_TRAFFIC_SHIFT
+# buildConfig is often inferred for Next.js, but can be specified if needed:
+# buildConfig:
+#   buildCommand: npm run build
+#   startCommand: npm run start
+    

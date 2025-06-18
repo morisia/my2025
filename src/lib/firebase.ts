@@ -16,43 +16,47 @@ interface FirebaseConfig {
 }
 
 let firebaseConfigValues: FirebaseConfig = {};
-let configSource: string = "None";
+let configSource: string = "None (initial)";
 
-// Check if running in a Firebase App Hosting environment (where configuration might be injected)
-// or if NEXT_PUBLIC_ variables are available (common for client-side access in Next.js)
+// Log attempts to get config
+console.log("[FirebaseInit] Attempting to load Firebase config...");
 
+// 1. Try injected config (Primarily for Firebase Hosting, but App Hosting might use similar mechanism for Web Apps)
 if (typeof window !== 'undefined' && (window as any).__FIREBASE_DEFERRED_APP_CONFIG__) {
-  // Preferentially use config injected by App Hosting if available on the client (often for Hosting, might apply to App Hosting too)
   try {
     const deferredConfig = (window as any).__FIREBASE_DEFERRED_APP_CONFIG__;
-    // Check if it's a promise or direct object
     if (typeof deferredConfig.then === 'function') {
-      // It's a promise, handle it (though usually it's an object by the time scripts run)
-      // This part might need adjustment based on how App Hosting actually injects it.
-      // For now, assuming it might already be resolved or we won't await here.
-      console.warn("__FIREBASE_DEFERRED_APP_CONFIG__ is a promise, direct usage might be tricky here.");
+      console.warn("[FirebaseInit] __FIREBASE_DEFERRED_APP_CONFIG__ is a promise. This script expects it to be resolved.");
+      // If it's a promise, this simple script won't await it. App Hosting should resolve it.
     } else {
       firebaseConfigValues = deferredConfig;
       configSource = "__FIREBASE_DEFERRED_APP_CONFIG__ (window)";
+      console.log(`[FirebaseInit] Loaded config from ${configSource}`);
     }
   } catch (error) {
-    console.error("Failed to parse __FIREBASE_DEFERRED_APP_CONFIG__ from window:", error);
+    console.error("[FirebaseInit] Failed to parse __FIREBASE_DEFERRED_APP_CONFIG__ from window:", error);
   }
+} else {
+  console.log("[FirebaseInit] __FIREBASE_DEFERRED_APP_CONFIG__ not found on window.");
 }
 
-// If the window object didn't provide it, try process.env.FIREBASE_WEBAPP_CONFIG (more for build time)
-// For client-side runtime, this is less likely to be directly available unless specifically exposed.
+// 2. Try FIREBASE_WEBAPP_CONFIG environment variable (Less likely for client-side runtime in App Hosting unless specifically exposed)
 if (!firebaseConfigValues.apiKey && process.env.FIREBASE_WEBAPP_CONFIG) {
+  console.log("[FirebaseInit] Attempting to load from process.env.FIREBASE_WEBAPP_CONFIG...");
   try {
     firebaseConfigValues = JSON.parse(process.env.FIREBASE_WEBAPP_CONFIG);
     configSource = "process.env.FIREBASE_WEBAPP_CONFIG";
+    console.log(`[FirebaseInit] Loaded config from ${configSource}`);
   } catch (error) {
-    console.error("Failed to parse FIREBASE_WEBAPP_CONFIG from process.env:", error);
+    console.error("[FirebaseInit] Failed to parse FIREBASE_WEBAPP_CONFIG from process.env:", error);
   }
+} else if (!firebaseConfigValues.apiKey) {
+  console.log("[FirebaseInit] process.env.FIREBASE_WEBAPP_CONFIG not found or apiKey still missing.");
 }
 
-// If FIREBASE_WEBAPP_CONFIG wasn't available or parsing failed, or if we're in a context where NEXT_PUBLIC_ vars are primary
+// 3. Fallback to individual NEXT_PUBLIC_ environment variables (Standard for Next.js)
 if (!firebaseConfigValues.apiKey) {
+  console.log("[FirebaseInit] Attempting to load from NEXT_PUBLIC_ environment variables...");
   configSource = "NEXT_PUBLIC_ environment variables";
   firebaseConfigValues = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -63,15 +67,23 @@ if (!firebaseConfigValues.apiKey) {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
+  console.log(`[FirebaseInit] Attempted to load config from ${configSource}. API Key found: ${!!firebaseConfigValues.apiKey}, Project ID found: ${!!firebaseConfigValues.projectId}`);
 }
 
-// console.log(`Firebase config loaded from: ${configSource}`);
-
-// The warning message for missing API key
+// Check if essential config values are present
 if (!firebaseConfigValues.apiKey) {
   console.error(
-    "Firebase API Key is missing or not loaded. Ensure Firebase configuration is available. For local development, check your .env.local file. For App Hosting, ensure FIREBASE_WEBAPP_CONFIG is injected or individual NEXT_PUBLIC_ variables are set in the App Hosting environment configuration if you are not using the injected config."
+    `[FirebaseInit - ERROR] Firebase API Key is missing or not loaded. Final config source tried: ${configSource}. Ensure Firebase configuration is available. For local development, check your .env.local file. For App Hosting, ensure FIREBASE_WEBAPP_CONFIG is injected or individual NEXT_PUBLIC_ variables are set in the App Hosting environment configuration if you are not using the injected config.`
   );
+}
+if (!firebaseConfigValues.projectId) {
+   console.error(`[FirebaseInit - ERROR] Firebase Project ID is missing or not loaded. Final config source tried: ${configSource}.`);
+}
+
+if (!firebaseConfigValues.apiKey || !firebaseConfigValues.projectId) {
+  console.error("[FirebaseInit - CRITICAL] Critical Firebase configuration (apiKey or projectId) is missing. Firebase initialization might fail or use incorrect project.");
+} else {
+  console.log(`[FirebaseInit] Proceeding with Firebase initialization. Config source: ${configSource}. Project ID: ${firebaseConfigValues.projectId}`);
 }
 
 // Initialize Firebase
@@ -81,13 +93,7 @@ let db: Firestore;
 let analytics: Analytics | undefined;
 
 if (!getApps().length) {
-  if (firebaseConfigValues.apiKey && firebaseConfigValues.projectId) {
-    app = initializeApp(firebaseConfigValues);
-  } else {
-    console.error("Critical Firebase configuration (apiKey or projectId) is missing. Firebase initialization might fail.");
-    // Attempt anyway, it will likely throw a more specific error from Firebase SDK itself if truly broken.
-    app = initializeApp(firebaseConfigValues as any);
-  }
+  app = initializeApp(firebaseConfigValues);
 } else {
   app = getApps()[0]!;
 }
@@ -95,12 +101,16 @@ if (!getApps().length) {
 auth = getAuth(app);
 db = getFirestore(app);
 
-if (typeof window !== 'undefined' && firebaseConfigValues.measurementId && app) {
+if (typeof window !== 'undefined' && firebaseConfigValues.measurementId && app && app.options.measurementId) {
   try {
     analytics = getAnalytics(app);
   } catch (error) {
-    console.warn("Firebase Analytics could not be initialized:", error);
+    console.warn("[FirebaseInit] Firebase Analytics could not be initialized:", error);
   }
+} else if (typeof window !== 'undefined' && !firebaseConfigValues.measurementId) {
+    console.log("[FirebaseInit] Firebase Analytics not initialized because measurementId is missing in config.");
 }
 
+
 export { app, auth, db, analytics };
+    
