@@ -1,4 +1,3 @@
-
 # yaml-language-server: $schema=https://firebase.google.com/static/apphosting/schema.json
 
 runConfig:
@@ -6,28 +5,27 @@ runConfig:
   memoryMiB: 1024
   concurrency: 80
   maxInstances: 10
+
 env:
   - variable: NODE_ENV
     value: production
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: ${env.API_KEY}
+    value: AIzaSyDlBZ5B8x3qkmFfIjWTvJHKv2KkBM4AFXQ
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: ${env.AUTH_DOMAIN}
+    value: myonlineshop2025-5ffcf.firebaseapp.com
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: ${env.PROJECT_ID}
+    value: myonlineshop2025-5ffcf
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: ${env.STORAGE_BUCKET}
+    value: myonlineshop2025-5ffcf.firebasestorage.app
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: ${env.MESSAGING_SENDER_ID}
+    value: "239556272864"
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: ${env.APP_ID}
+    value: 1:239556272864:web:c7b7dd9d662da45ee2a685
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    value: ${env.MEASUREMENT_ID}
-  - variable: GEMINI_API_KEY # This will be used by the genkit.ts for server-side AI
-    secret: GEMINI_API_KEY_TIFLISISTYLES # Ensure this secret exists in Google Secret Manager
-    availability:
-      - BUILD
-      - RUNTIME
+    value: G-7MJZZ1SV8M
+  - variable: GEMINI_API_KEY
+    value: AlzaSyDS8ZclbpBfiea9Qp6_zg3NdCyR3uCXSxM
+
 headers:
   - path: /_next/static
     headers:
@@ -37,7 +35,8 @@ headers:
     headers:
       - key: Cache-Control
         value: public, max-age=31536000, immutable
-# buildConfig is often inferred for Next.js, but can be specified if needed:
+
+# თუ გჭირდება build/start ბრძანებების მითითება, ჩაწერე აქ:
 # buildConfig:
 #   buildCommand: npm run build
 #   startCommand: npm run start
