@@ -5,7 +5,7 @@
         "region": "europe-west4"
       },
       "hosting": {
-        "site": "my-shop2025",
+        "site": "my2025",
         "source": "workspaces"
       }
     }
