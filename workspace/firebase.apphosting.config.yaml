@@ -9,7 +9,7 @@ runConfig:
 apphosting:
   - backendId: "my2025"
     location: "europe-west4"
-    rootDir: "workspace"
+    rootDir: "."
 env:
     # Get these values from your Firebase Project Settings > Your apps > Web App (Config)
     - variable: NEXT_PUBLIC_FIREBASE_API_KEY

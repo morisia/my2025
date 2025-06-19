@@ -5,7 +5,6 @@
         "region": "europe-west4"
       },
       "hosting": {
-        "site": "my2025",
         "source": "workspaces"
       }
     }
